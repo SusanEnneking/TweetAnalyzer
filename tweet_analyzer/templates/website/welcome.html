@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Welcome{% endblock %}
+{%block jscontent %}
+        <script src="{% static 'js/search/search.js' %}"></script>
+{% endblock %}
+{% block content %}
+	    <div class="container-fluid" style="padding: 50px;">
+            <h1>Welcome To Twitter Analyzer</h1>
+            <div style="main">
+                <div class="row">
+                    <p>This web site has been set up for researchers to gather and analyze Twitter data.
+                        Twitter data can be pretty expensive.  The age of the data you're request plays the biggest role in the cost.</p>
+
+                    <p>You may use this web site for free data, but if you want more robust data, please check the links below to get going.</p> 
+
+                    <p>You can find the code for this site on GitHub at <a href="https://github.com/SusanEnneking/TweetAnalyzer">this location</a>.</p>
+                </div>
+                <div class="row">
+                    <p><strong>Thanks for visiting!</strong>
+                    </p>
+                </div>
+            </div>
+            <div>
+                <h3>Twitter references</h3>
+                <div style="main">
+                    <p><a href="https://developer.twitter.com/en/">Twitter Developer Home</a></p>
+                    <p><a href="https://developer.twitter.com/en/apply-for-access">Twitter Developer Getting Started</a></p>
+                    <p> <a href="https://developer.twitter.com/en/docs/tweets/search/api-reference/premium-search">Premium Search Documentation</a></p>
+                </div>
+            </div>
+
+        </div>
+{% endblock %}
