@@ -1,11 +1,12 @@
 from django.conf.urls import url
 from django.contrib.auth.views import LoginView, LogoutView
 
-from .views import search, saved_search
+from .views import search, saved_search, get_tweets
 
 urlpatterns = [
     url(r'search$', search, name="search"),
-    url(r'saved_search$', saved_search, name="saved_search")
+    url(r'saved_search$', saved_search, name="saved_search"),
+    url(r'get_tweets$', get_tweets, name="get_tweets"),
     # url(r'login$',
     #     LoginView.as_view(template_name="player/login_form.html"),
     #     name="user_login"),

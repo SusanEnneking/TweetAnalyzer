@@ -33,8 +33,8 @@ var SearchTwitter = (function(){
 		}
 		else
 		{
-			var melData = getMainUrl() + '&isExport=True';
-			download(melData, "key", "data");
+			var getMainUrl = getMainUrl() + '&isExport=True';
+			download(mainUrl, "key", "data");
 		}
 	}
 
@@ -50,21 +50,21 @@ var SearchTwitter = (function(){
 
 	function getMainUrl(){
 		$('#errorMessage').addClass("hide");
-		var melData = 'melData.php?searchq=' + encodeURI($('#searchq').val()) +
+		var mainUrl = '/get_tweets/?searchq=' + encodeURI($('#searchq').val()) +
 					  '&maxRequestCount=' + $('#maxrequestcount').val();
 		if ($('#searchFromDate').val())
 		{
 			var formattedsearchFromDate = formatDate($('#searchFromDate').val());
-			melData = melData + "&fromDate=" + encodeURI(formattedsearchFromDate);
+			mainUrl = mainUrl + "&fromDate=" + encodeURI(formattedsearchFromDate);
 		}
 		if ($('#searchToDate').val())
 		{
 			var formattedsearchToDate = formatDate($('#searchToDate').val());
-			melData = melData + "&toDate=" + encodeURI(formattedsearchToDate);
+			mainUrl = mainUrl + "&toDate=" + encodeURI(formattedsearchToDate);
 		}
 		$('#returnedJson').html("Getting twitter data...");
 
-		return melData;
+		return mainUrl;
 
 	}
 

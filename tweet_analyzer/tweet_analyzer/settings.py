@@ -25,7 +25,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+ENVIRONMENT = os.getenv("DJANGO_ENVIRONMENT")
+
+DEBUG = False
+
+if ENVIRONMENT == 'local':
+    DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -125,4 +130,29 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static")
 ]
+
+CONSUMER_KEY = os.getenv('CONSUMER_KEY')
+CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
+# ACCESS_TOKEN = os.getenv('ACCESS_KEY')
+# ACCESS_TOKEN_SECRET = os.getenv('ACCESS_SECRET')
+TWITTER_APP_NAME = os.getenv('TWITTER_APP_NAME')
+
+FULL_ENDPOINT =  'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
+MONTH_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json'
+OAUTH_ENDPOINT = 'https://api.twitter.com/oauth2/token'
+
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'WARNING',
+    },
+}
+
 

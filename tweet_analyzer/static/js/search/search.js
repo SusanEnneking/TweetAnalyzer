@@ -14,8 +14,8 @@ var SearchTwitter = (function(){
 		{
 			$('#errorMessage').addClass("d-none");
 			$('#returnedJson').val('');
-			var melData = getMainUrl();
-			$.getJSON(melData, {})
+			var mainUrl  = getMainUrl();
+			$.getJSON(mainUrl, {})
 				.done(function(data){
 					$('#returnedJson').html(JSON.stringify(data));
 				})
@@ -50,25 +50,25 @@ var SearchTwitter = (function(){
 
 	function getMainUrl(){
 		$('#errorMessage').addClass("hide");
-		var melData = 'melData.php?searchq=' + encodeURI($('#searchq').val()) +
+		var mainUrl = 'get_tweets?searchq=' + encodeURI($('#searchq').val()) +
 					  '&maxRequestCount=' + $('#maxrequestcount').val();
 		if ($('#searchFromDate').val())
 		{
-			var formattedsearchFromDate = formatDate($('#searchFromDate').val());
-			melData = melData + "&fromDate=" + encodeURI(formattedsearchFromDate);
+			formattedsearchFromDate = $('#searchFromDate').val();
+			mainUrl = mainUrl + "&fromDate=" + encodeURI(formattedsearchFromDate);
 		}
 		if ($('#searchToDate').val())
 		{
-			var formattedsearchToDate = formatDate($('#searchToDate').val());
-			melData = melData + "&toDate=" + encodeURI(formattedsearchToDate);
+			var formattedsearchToDate = $('#searchToDate').val();
+			mainUrl = mainUrl + "&toDate=" + encodeURI(formattedsearchToDate);
 		}
 		$('#returnedJson').html("Getting twitter data...");
 
-		return melData;
+		return mainUrl;
 
 	}
 
-	function formatDate(formatDate){
+	function format_date(formatDate){
 		formatDate = new Date(formatDate);
 		var dateString = '';
 		dateString = dateString.concat(formatDate.getFullYear().toString());
