@@ -2,5 +2,6 @@
 .DS_Store
 *.env
 __pychache__/*
+test_data/*
 *.pyc
 db.sqlite3

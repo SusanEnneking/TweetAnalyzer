@@ -3,10 +3,14 @@ import logging
 logger = logging.getLogger(__name__)
 import requests
 import json
+from json import JSONEncoder
 from django.conf import settings
 import datetime
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
+import ast
+
+
 
 class TwitterHelper(object):
 
@@ -22,8 +26,8 @@ class TwitterHelper(object):
 
 
 	def get_tweets(self):
-		import pdb;pdb.set_trace()
-		access_token = self.get_token()
+		access_token = ''
+		#access_token = self.get_token()
 		url = self.get_url()
 		logger.info("Url: {0}".format(url))
 		all_tweets = []
@@ -36,37 +40,43 @@ class TwitterHelper(object):
 		more_tweets = True
 		next_indicator = ''
 		while (more_tweets and call_count < max_request_count):
+			import pdb;pdb.set_trace()
 			call_count = call_count + 1
 			logger.info("Searching ...")
 			tweets = self.search(access_token, next_indicator, url)
-			if tweets.results:
+			if tweets.message == '' and tweets.results and len(tweets.results) > 0:
 				all_tweets = all_tweets + tweets.results
 				next_prop_exists = False
-				if tweets.next:
+				if tweets.next and len(tweets.results) < self.max_results:
 					next_prop_exists = True
-				logger.info("Tweet Count...{0} Next... {1}".format(len(all_tweets)), next_prop_exists)
-				if tweets.next:
+				logger.info("Tweet Count...{0} Next... {1}".format(len(all_tweets), next_prop_exists))
+				if next_prop_exists:
 					next_indicator = "&next={0}".format(tweets.next)
 				else:
 					more_tweets = False
 			else:
 				logger.error("Twitter didn't return any data")
+		import pdb;pdb.set_trace()
 		return all_tweets
 
 	def search(self, token, next, url):
-		import pdb;pdb.set_trace()
-		headers = {"Authorization": "Bearer {0}".format(token)}
-		url = url + next
-		response = requests.get(url, headers=headers)
+		# headers = {"Authorization": "Bearer {0}".format(token)}
+		# url = url + next
+		# response = requests.get(url, headers=headers)
 		json_data = 'None'
-		if response.status_code == 200:
-			resp = json.loads(response.content.decode(response.encoding))
-		else:
-			logger.error("Error: Status-{0} Message-{1} {2}".format(response.status_code, response.reason, response.text))
-		return json_data
+		message = ''
+		# if response.status_code == 200:
+		# 	resp = json.loads(response.content.decode(response.encoding))
+		# else:
+		# 	message = "Error: Status-{0} Message-{1} {2}".format(response.status_code, response.reason, response.text)
+		# 	logger.error(message)
+		with open('common/test_data/test_response.json') as json_file:
+			json_data = json_file.read()
+			json_data = ast.literal_eval(json_data)
+		twitter_response = TwitterResponse({'message': message, 'data':json_data})
+		return twitter_response
 
 	def get_url(self):
-		import pdb;pdb.set_trace()
 		url = settings.MONTH_ENDPOINT
 		thirty_days_ago = datetime.today() - timedelta(days=30)
 		logger.info("Thirty days ago = {0}".format(thirty_days_ago))
@@ -94,3 +104,43 @@ class TwitterHelper(object):
 		response = requests.post(settings.OAUTH_ENDPOINT, auth=(settings.CONSUMER_KEY, settings.CONSUMER_SECRET), data=data)
 		json_data = response.json()
 		return json_data['access_token']
+
+class TwitterResponse(object):
+	def __init__(self, data):
+		self.message = data['message']
+		self.next = data['data']['next']
+		self.results = []
+		for result in data['data']['results']:
+			tweet = TweetData(result)
+			self.results.append(tweet)
+		self.request_parameters = data['data']['requestParameters']
+
+
+
+class TweetData(object):
+	#Twitter has much more data, this is just what Melody needed for her research
+	def __init__(self, data):
+		self.created_at = data['created_at']
+		self.id_str = data['id_str']
+		self.source = data['source']
+		self.user = TwitterUser(data['user'])
+		self.text = data['text']
+
+
+
+class TwitterUser(object):
+	def __init__(self, data):
+		self.name = data['name']
+		self.screen_name = data['screen_name']
+		self.location = data['location']
+		self.description = data['description']
+		self.followers_count = data['followers_count']
+		self.friends_count = data['friends_count']
+		self.statuses_count = data['statuses_count']
+
+class TwitterDataEncoder(JSONEncoder):
+        def default(self, o):
+            return o.__dict__
+
+
+

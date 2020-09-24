@@ -1,2 +1,2 @@
 # TweetAnalyzer
-Play with Twitter API
+Twitter Research Data Retrieval And Analysis

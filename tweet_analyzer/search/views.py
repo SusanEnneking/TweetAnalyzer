@@ -1,9 +1,10 @@
 
 from django.shortcuts import render
 from django.http import HttpResponse
-from common.twitter import TwitterHelper
+from django.http import JsonResponse
+from common.twitter import TwitterHelper, TwitterDataEncoder
+import json
 
-# Create your views here.
 
 def search(request):
 	return render(request, 'search/search.html')
@@ -27,3 +28,6 @@ def get_tweets(request):
 		to_date = request.GET['toDate']
 	twitter = TwitterHelper(max_request_count, searchq, from_date, to_date)
 	tweets = twitter.get_tweets()
+	json_string = json.dumps([tweet.__dict__ for tweet in tweets], cls=TwitterDataEncoder)
+	return HttpResponse(json_string, content_type='application/json')
+
