@@ -16,11 +16,11 @@ Including another URLconf
 from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path
-from website.views import welcome, about
+from website.views import Welcome, About
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', welcome),
-    path('about/', about),
+    path('', Welcome.as_view()),
+    path('about/', About.as_view()),
     url(r'^search/', include('search.urls')),
 ]

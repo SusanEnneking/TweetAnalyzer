@@ -1,6 +1,6 @@
 
 import logging
-logger = logging.getLogger(__name__)
+logger = logging.getLogger('django')
 import requests
 import json
 from json import JSONEncoder
@@ -29,7 +29,7 @@ class TwitterHelper(object):
 		access_token = ''
 		#access_token = self.get_token()
 		url = self.get_url()
-		logger.info("Url: {0}".format(url))
+		logger.debug("Url: {0}".format(url))
 		all_tweets = []
 		max_request_count = self.max_request_count
 		if not max_request_count or max_request_count == 0:
@@ -56,7 +56,6 @@ class TwitterHelper(object):
 					more_tweets = False
 			else:
 				logger.error("Twitter didn't return any data")
-		import pdb;pdb.set_trace()
 		return all_tweets
 
 	def search(self, token, next, url):

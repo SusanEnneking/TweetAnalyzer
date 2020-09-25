@@ -56,6 +56,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'request_logging.middleware.LoggingMiddleware',
 ]
 
 ROOT_URLCONF = 'tweet_analyzer.urls'
@@ -133,8 +134,6 @@ STATICFILES_DIRS = [
 
 CONSUMER_KEY = os.getenv('CONSUMER_KEY')
 CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
-# ACCESS_TOKEN = os.getenv('ACCESS_KEY')
-# ACCESS_TOKEN_SECRET = os.getenv('ACCESS_SECRET')
 TWITTER_APP_NAME = os.getenv('TWITTER_APP_NAME')
 
 FULL_ENDPOINT =  'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
@@ -144,13 +143,38 @@ OAUTH_ENDPOINT = 'https://api.twitter.com/oauth2/token'
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
+    'formatters': {
+        'standard': {
+            'format': '%(asctime)s %(levelname)s %(name)s %(message)s'
+        },
+    },
     'handlers': {
-        'console': {
-            'class': 'logging.StreamHandler',
+        'django': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/django/django_console.log',
+            'maxBytes': 1024*1024*5, # 5 MB
+            'backupCount': 5,
+            'formatter':'standard',
+        },
+        'django.request': {
+            'level':'DEBUG',
+            'class':'logging.handlers.RotatingFileHandler',
+            'filename': 'logs/django/django_request.log',
+            'maxBytes': 1024*1024*5, # 5 MB
+            'backupCount': 5,
+            'formatter':'standard',
+        },
+    },
+    'loggers': {
+        'django.request': {
+            'handlers': ['django.request'],
+            'level': 'DEBUG',  # change debug level as appropiate
+            'propagate': False,
         },
     },
     'root': {
-        'handlers': ['console'],
+        'handlers': ['django'],
         'level': 'WARNING',
     },
 }

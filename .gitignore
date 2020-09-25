@@ -5,3 +5,5 @@ __pychache__/*
 test_data/*
 *.pyc
 db.sqlite3
+*.log
+logs/*

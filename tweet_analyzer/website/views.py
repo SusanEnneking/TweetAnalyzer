@@ -1,12 +1,8 @@
 
+from django.views.generic import TemplateView
 
-from django.shortcuts import render
-from django.http import HttpResponse
+class Welcome(TemplateView):
+	template_name = 'website/welcome.html'
 
-# Create your views here.
-
-def welcome(request):
-	return render(request, 'website/welcome.html')
-
-def about(request):
-	return HttpResponse("Hi, my name is Susan Enneking \nI'm a developer with one foot in Django \n and one foot in C#")
+class About(TemplateView):
+	template_name = 'website/about.html'

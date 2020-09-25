@@ -1,16 +1,16 @@
 
-from django.shortcuts import render
 from django.http import HttpResponse
 from django.http import JsonResponse
 from common.twitter import TwitterHelper, TwitterDataEncoder
+from django.views.generic import TemplateView
 import json
 
 
-def search(request):
-	return render(request, 'search/search.html')
+class Search(TemplateView):
+	template_name = 'search/search.html'
 
-def saved_search(request):
-	return render(request, 'search/search.html')
+class SavedSearch(TemplateView):
+	template_name = 'search/search.html'
 
 def get_tweets(request):
 	import pdb;pdb.set_trace()
