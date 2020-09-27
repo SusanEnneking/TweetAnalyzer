@@ -20,14 +20,21 @@ class TwitterHelper(object):
 		self.date_string_format = '%Y%m%d%H%M'
 		self.max_request_count = int(max_request_count)
 		self.searchq = searchq
-		self.from_date = datetime.strptime(from_date, format)
-		self.to_date = datetime.strptime(to_date, format)
-		self.max_results = 10
+		if from_date:
+			self.from_date = datetime.strptime(from_date, format)
+		else:
+			self.from_date = None
+		if to_date:
+			self.to_date = datetime.strptime(to_date, format)
+		else:
+			self.to_date = None
+		self.max_results = settings.MAX_RESULTS
 
 
 	def get_tweets(self):
+		import pdb;pdb.set_trace()
 		access_token = ''
-		#access_token = self.get_token()
+		access_token = self.get_token()
 		url = self.get_url()
 		logger.debug("Url: {0}".format(url))
 		all_tweets = []
@@ -59,19 +66,18 @@ class TwitterHelper(object):
 		return all_tweets
 
 	def search(self, token, next, url):
-		# headers = {"Authorization": "Bearer {0}".format(token)}
-		# url = url + next
-		# response = requests.get(url, headers=headers)
+		headers = {"Authorization": "Bearer {0}".format(token)}
+		url = url + next
+		response = requests.get(url, headers=headers)
 		json_data = 'None'
 		message = ''
-		# if response.status_code == 200:
-		# 	resp = json.loads(response.content.decode(response.encoding))
-		# else:
-		# 	message = "Error: Status-{0} Message-{1} {2}".format(response.status_code, response.reason, response.text)
-		# 	logger.error(message)
-		with open('common/test_data/test_response.json') as json_file:
-			json_data = json_file.read()
-			json_data = ast.literal_eval(json_data)
+		if response.status_code == 200:
+			import pdb;pdb.set_trace()
+			json_data = json.loads(response.content.decode(response.encoding))
+			#json_data = response.json_data
+		else:
+			message = "Error: Status-{0} Message-{1} {2}".format(response.status_code, response.reason, response.text)
+			logger.error(message)
 		twitter_response = TwitterResponse({'message': message, 'data':json_data})
 		return twitter_response
 
@@ -99,6 +105,7 @@ class TwitterHelper(object):
 		return url
 
 	def get_token(self):
+		import pdb;pdb.set_trace()
 		data = [('grant_type', 'client_credentials')]
 		response = requests.post(settings.OAUTH_ENDPOINT, auth=(settings.CONSUMER_KEY, settings.CONSUMER_SECRET), data=data)
 		json_data = response.json()

@@ -135,6 +135,7 @@ STATICFILES_DIRS = [
 CONSUMER_KEY = os.getenv('CONSUMER_KEY')
 CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
 TWITTER_APP_NAME = os.getenv('TWITTER_APP_NAME')
+MAX_RESULTS = 10
 
 FULL_ENDPOINT =  'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
 MONTH_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json'
