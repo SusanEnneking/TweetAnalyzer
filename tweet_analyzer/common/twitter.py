@@ -44,6 +44,7 @@ class TwitterHelper(object):
 		call_count = 0
 		more_tweets = True
 		next_indicator = ''
+		error_message = ''
 		while (more_tweets and call_count < max_request_count):
 			import pdb;pdb.set_trace()
 			call_count = call_count + 1
@@ -60,14 +61,16 @@ class TwitterHelper(object):
 				else:
 					more_tweets = False
 			else:
-				logger.error("Twitter didn't return any data")
-		return all_tweets
+				logger.error("Twitter didn't return any data. Message: {0}".format(tweets.message))
+				error_message = tweets.message
+				break
+		return {'message': error_message, 'data': all_tweets}
 
 	def search(self, token, next, url):
 		headers = {"Authorization": "Bearer {0}".format(token)}
 		url = url + next
 		response = requests.get(url, headers=headers)
-		json_data = 'None'
+		json_data = None
 		message = ''
 		if response.status_code == 200:
 			json_data = json.loads(response.content.decode(response.encoding))
@@ -110,15 +113,29 @@ class TwitterHelper(object):
 		json_data = response.json()
 		return json_data['access_token']
 
+	def get_row(self, tweet):
+		return [tweet.created_at, tweet.id_str, tweet.source, tweet.text,
+				tweet.user.name, tweet.user.screen_name, tweet.user.location,
+				tweet.user.description, tweet.user.followers_count,
+				tweet.user.friends_count, tweet.user.statuses_count]
+
+	def get_header(self):
+		return ['Created At', 'Id Str', 'Source', 'Text',
+				'User Name', 'User Screen Name', 'User Location',
+				'User Description', 'User Follower Count',
+				'User Friend Count', 'User Statuses Count']
+
 class TwitterResponse(object):
 	def __init__(self, data):
 		self.message = data['message']
-		self.next = data['data']['next']
 		self.results = []
-		for result in data['data']['results']:
-			tweet = TweetData(result)
-			self.results.append(tweet)
-		self.request_parameters = data['data']['requestParameters']
+		import pdb;pdb.set_trace()
+		if data['data']:
+			self.next = data['data']['next']
+			for result in data['data']['results']:
+				tweet = TweetData(result)
+				self.results.append(tweet)
+			self.request_parameters = data['data']['requestParameters']
 
 
 

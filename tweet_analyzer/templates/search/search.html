@@ -37,8 +37,8 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <button class="btn-primary" onclick="SearchTwitter.search();">Search Tweets</button>
-                    <button class="btn-primary" onclick="SearchTwitter.export();">Export Data</button>
+                    <button class="btn-primary" onclick="SearchTwitter.search(false);">Search Tweets</button>
+                    <button class="btn-primary" onclick="SearchTwitter.search(true);">Export Data</button>
                 </div>
                 <div class="col-sm-6 alert alert-danger d-none" id="errorMessage">
                     <p><strong>ERROR!</strong> query and count fields are required!  Max length must be a number from 1-10.</p> 
