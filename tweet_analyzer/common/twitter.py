@@ -15,7 +15,6 @@ import ast
 class TwitterHelper(object):
 
 	def __init__(self, max_request_count, searchq, from_date, to_date):
-		import pdb;pdb.set_trace()
 		format = '%Y-%m-%dT%H:%M'
 		self.date_string_format = '%Y%m%d%H%M'
 		self.max_request_count = int(max_request_count)
@@ -32,7 +31,6 @@ class TwitterHelper(object):
 
 
 	def get_tweets(self):
-		import pdb;pdb.set_trace()
 		access_token = ''
 		access_token = self.get_token()
 		url = self.get_url()
@@ -72,9 +70,11 @@ class TwitterHelper(object):
 		json_data = 'None'
 		message = ''
 		if response.status_code == 200:
-			import pdb;pdb.set_trace()
 			json_data = json.loads(response.content.decode(response.encoding))
-			#json_data = response.json_data
+			#to write this to a file for testing, put a breakpoint here, then use:
+			# 	f = open('common/test_data/test_response.json', 'wb')
+			#	f.write(response.content)
+			#in shell to write a test file you can use in tests/test_search.py
 		else:
 			message = "Error: Status-{0} Message-{1} {2}".format(response.status_code, response.reason, response.text)
 			logger.error(message)
@@ -105,7 +105,6 @@ class TwitterHelper(object):
 		return url
 
 	def get_token(self):
-		import pdb;pdb.set_trace()
 		data = [('grant_type', 'client_credentials')]
 		response = requests.post(settings.OAUTH_ENDPOINT, auth=(settings.CONSUMER_KEY, settings.CONSUMER_SECRET), data=data)
 		json_data = response.json()
@@ -124,7 +123,7 @@ class TwitterResponse(object):
 
 
 class TweetData(object):
-	#Twitter has much more data, this is just what Melody needed for her research
+
 	def __init__(self, data):
 		self.created_at = data['created_at']
 		self.id_str = data['id_str']
@@ -135,6 +134,7 @@ class TweetData(object):
 
 
 class TwitterUser(object):
+	#Twitter has much more data, this is just what Melody needed for her research
 	def __init__(self, data):
 		self.name = data['name']
 		self.screen_name = data['screen_name']

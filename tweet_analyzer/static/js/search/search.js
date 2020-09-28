@@ -27,7 +27,11 @@ var SearchTwitter = (function(){
 	}
 
 	function sendExport(){
-		if ($('#searchq').val().length == 0 || $('#maxrequestcount').val().length == 0)
+		if ($('#searchq').val().length == 0 
+			|| $('#maxrequestcount').val().length == 0
+			|| $('#maxrequestcount').val() > 10
+			|| $('#maxrequestcount').val() < 1
+			)
 		{
 			$('#errorMessage').removeClass("hide");
 		}

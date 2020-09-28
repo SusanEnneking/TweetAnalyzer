@@ -13,7 +13,6 @@ class SavedSearch(TemplateView):
 	template_name = 'search/search.html'
 
 def get_tweets(request):
-	import pdb;pdb.set_trace()
 	max_request_count = None
 	searchq = None
 	from_date = None

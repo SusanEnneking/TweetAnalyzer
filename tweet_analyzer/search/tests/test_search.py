@@ -29,7 +29,6 @@ def mocked_requests_get(*args, **kwargs):
         def __init__(self, content, status_code, encoding):
             self.content = content
             self.status_code = status_code
-            import pdb;pdb.set_trace()
             self.encoding = encoding
 
         def content(self):
@@ -38,9 +37,7 @@ def mocked_requests_get(*args, **kwargs):
         json_data = 'None'
         message = ''
         with open('common/test_data/test_response.json', 'rb') as json_file:
-            import pdb;pdb.set_trace()
             json_data = json_file.read()
-
 
         return MockResponse(json_data, 200, 'utf-8')
 
@@ -58,6 +55,8 @@ class TwitterClassTestCase(unittest.TestCase):
         to_date = None
         twitter = TwitterHelper(max_request_count, searchq, from_date, to_date)
         tweets = twitter.get_tweets()
+
+        #The test_response.json file in mocked_requests_get contains 10 tweets
         self.assertEqual(len(tweets), 10)
 
 if __name__ == '__main__':
