@@ -51,7 +51,7 @@ var SearchTwitter = (function(){
 	function getMainUrl(){
 		$('#errorMessage').addClass("hide");
 		var mainUrl = '/get_tweets/?searchq=' + encodeURI($('#searchq').val()) +
-					  '&maxRequestCount=' + $('#maxrequestcount').val();
+					  '&maxResults=' + $('#maxrequestcount').val();
 		if ($('#searchFromDate').val())
 		{
 			var formattedsearchFromDate = formatDate($('#searchFromDate').val());

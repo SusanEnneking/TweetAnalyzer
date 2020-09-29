@@ -9,17 +9,14 @@
         <h1>Twitter Search</h1>
         <div style="main">
             <div class="row">
-                <p>See <a href="https://developer.twitter.com/en/docs/tweets/search/api-reference/premium-search">Search Documentation</a> for details about each parameter</p>
+                <p>See <a href="https://developer.twitter.com/en/docs/tweets/search/api-reference/premium-search">Search Documentation</a> for details about each search field.</p>
+                <p>&nbsp;&nbsp;See <a href="https://developer.twitter.com/en/docs/twitter-api/v1/tweets/search/overview/premium#AvailableOperators">Query Documentation</a> for details about building queries.</p>
             </div>
             <div class="row">
                 <div class="col-sm-4">
                     <div class="form-group">
-                        <label for="searchq">query</label>
+                        <label for="searchq">Free-form search query</label>
                         <input type="text" class="form-control" id="searchq" placeholder="query" required>
-                    </div>
-                    <div class="form-group">
-                        <label for="maxrequestcount">Max Requests (so as not to use up our allocation)</label>
-                        <input type="number" class="form-control" id="maxrequestcount" placeholder="1 - 10" max="10" min="1" maxlength="2" required>
                     </div>
 
                 </div>
@@ -37,16 +34,18 @@
             </div>
             <div class="row">
                 <div class="col-sm-6">
-                    <button class="btn-primary" onclick="SearchTwitter.search(false);">Search Tweets</button>
+                    <button class="btn-primary" onclick="SearchTwitter.search(false);">Get Counts</button>
                     <button class="btn-primary" onclick="SearchTwitter.search(true);">Export Data</button>
                 </div>
                 <div class="col-sm-6 alert alert-danger d-none" id="errorMessage">
-                    <p><strong>ERROR!</strong> query and count fields are required!  Max length must be a number from 1-10.</p> 
+                    <p><strong>ERROR!</strong> query field is required!</p> 
                 </div>
             </div>
+            <br/>
             <div class="row">
-
-                <h1>Returned Data</h1>
+                <h1>Previous Searches</h1>
+            </div>
+            <div class="row">
 
                 <div class="col-sm-12">
                 </div>

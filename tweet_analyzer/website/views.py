@@ -1,6 +1,7 @@
 
 from django.views.generic import TemplateView
 
+
 class Welcome(TemplateView):
 	template_name = 'website/welcome.html'
 

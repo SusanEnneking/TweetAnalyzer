@@ -1,18 +1,11 @@
 from django.conf.urls import url
-from django.contrib.auth.views import LoginView, LogoutView
 
-from .views import Search, SavedSearch, get_tweets
+from .views import Search, get_tweets, search_counts
 
 urlpatterns = [
     url(r'search$', Search.as_view(), name="search"),
-    url(r'saved_search$', SavedSearch.as_view(), name="saved_search"),
+    url(r'search/counts$', search_counts, name="search_counts"),
     url(r'get_tweets$', get_tweets, name="get_tweets"),
-    # url(r'login$',
-    #     LoginView.as_view(template_name="player/login_form.html"),
-    #     name="user_login"),
-    # url(r'logout$',
-    #     LogoutView.as_view(),
-    #     name="user_logout"),
     # url(r'new_invitation$', new_invitation, name="player_new_invitation"),
     # url(r'accept_invitation/(?P<id>\d+)/$',
     #     accept_invitation,

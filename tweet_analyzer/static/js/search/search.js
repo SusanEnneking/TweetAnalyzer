@@ -2,11 +2,7 @@
 
 var SearchTwitter = (function(){
 	function sendSearch(isExport){
-		if ($('#searchq').val().length == 0 
-			|| $('#maxrequestcount').val().length == 0 
-			|| $('#maxrequestcount').val() > 10
-			|| $('#maxrequestcount').val() < 1
-			)
+		if ($('#searchq').val().length == 0)
 		{
 			$('#errorMessage').removeClass("d-none");
 		}
@@ -16,8 +12,9 @@ var SearchTwitter = (function(){
 			$('#returnedJson').val('');
 			var mainUrl  = getMainUrl();
 			if (isExport){
-				mainUrl = mainUrl + '&isExport=True'
-				location.replace(mainUrl)
+				mainUrl = mainUrl + '&isExport=True';
+				location.replace(mainUrl);
+				$('#returnedJson').html('');
 			}
 			else {
 			$.getJSON(mainUrl, {})
@@ -35,8 +32,7 @@ var SearchTwitter = (function(){
 
 	function getMainUrl(){
 		$('#errorMessage').addClass("hide");
-		var mainUrl = 'get_tweets?searchq=' + encodeURI($('#searchq').val()) +
-					  '&maxRequestCount=' + $('#maxrequestcount').val();
+		var mainUrl = 'get_tweets?searchq=' + encodeURI($('#searchq').val());
 		if ($('#searchFromDate').val())
 		{
 			formattedsearchFromDate = $('#searchFromDate').val();

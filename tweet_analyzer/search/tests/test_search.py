@@ -33,6 +33,7 @@ def mocked_requests_get(*args, **kwargs):
 
         def content(self):
             return self.content
+
     if settings.MONTH_ENDPOINT in args[0] or settings.FULL_ENDPOINT in args[0]:
         json_data = 'None'
         message = ''
@@ -53,9 +54,12 @@ class TwitterClassTestCase(unittest.TestCase):
         searchq = 'RGB'
         from_date = None
         to_date = None
-        twitter = TwitterHelper(max_request_count, searchq, from_date, to_date)
-        tweets = twitter.get_tweets()
+        twitter = TwitterHelper(searchq, from_date, to_date)
 
+        twitter_response = twitter.get_tweets()
+        message = twitter_response['message']
+        self.assertEqual(message, '')
+        tweets = twitter_response['data']
         #The test_response.json file in mocked_requests_get contains 10 tweets
         self.assertEqual(len(tweets), 10)
 

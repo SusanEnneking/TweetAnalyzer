@@ -14,10 +14,11 @@ import ast
 
 class TwitterHelper(object):
 
-	def __init__(self, max_request_count, searchq, from_date, to_date):
+	def __init__(self, searchq, from_date, to_date):
 		format = '%Y-%m-%dT%H:%M'
 		self.date_string_format = '%Y%m%d%H%M'
-		self.max_request_count = int(max_request_count)
+		self.max_requests = settings.MAX_REQUESTS
+		self.max_results = settings.MAX_RESULTS
 		self.searchq = searchq
 		if from_date:
 			self.from_date = datetime.strptime(from_date, format)
@@ -27,7 +28,7 @@ class TwitterHelper(object):
 			self.to_date = datetime.strptime(to_date, format)
 		else:
 			self.to_date = None
-		self.max_results = settings.MAX_RESULTS
+
 
 
 	def get_tweets(self):
@@ -36,16 +37,13 @@ class TwitterHelper(object):
 		url = self.get_url()
 		logger.debug("Url: {0}".format(url))
 		all_tweets = []
-		max_request_count = self.max_request_count
-		if not max_request_count or max_request_count == 0:
-			max_request_count = 1
-
-		logger.info("Max Requests: {0}".format(max_request_count))
+		max_requests = self.max_requests
+		logger.info("Max Results: {0}".format(max_requests))
 		call_count = 0
 		more_tweets = True
 		next_indicator = ''
 		error_message = ''
-		while (more_tweets and call_count < max_request_count):
+		while (more_tweets and call_count < max_requests):
 			import pdb;pdb.set_trace()
 			call_count = call_count + 1
 			logger.info("Searching ...")
@@ -53,7 +51,7 @@ class TwitterHelper(object):
 			if tweets.message == '' and tweets.results and len(tweets.results) > 0:
 				all_tweets = all_tweets + tweets.results
 				next_prop_exists = False
-				if tweets.next and len(tweets.results) < self.max_results:
+				if tweets.next:
 					next_prop_exists = True
 				logger.info("Tweet Count...{0} Next... {1}".format(len(all_tweets), next_prop_exists))
 				if next_prop_exists:
@@ -129,12 +127,13 @@ class TwitterResponse(object):
 	def __init__(self, data):
 		self.message = data['message']
 		self.results = []
-		import pdb;pdb.set_trace()
 		if data['data']:
-			self.next = data['data']['next']
-			for result in data['data']['results']:
-				tweet = TweetData(result)
-				self.results.append(tweet)
+			if data['data']['next']:
+				self.next = data['data']['next']
+			if data['data']['results']:
+				for result in data['data']['results']:
+					tweet = TweetData(result)
+					self.results.append(tweet)
 			self.request_parameters = data['data']['requestParameters']
 
 

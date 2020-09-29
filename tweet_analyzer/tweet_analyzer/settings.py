@@ -33,6 +33,9 @@ if ENVIRONMENT == 'local':
 
 ALLOWED_HOSTS = []
 
+LOGIN_REDIRECT_URL = 'search'
+LOGOUT_REDIRECT_URL = 'welcome'
+LOGIN_URL = 'researcher_login'
 
 # Application definition
 
@@ -134,7 +137,14 @@ STATICFILES_DIRS = [
 CONSUMER_KEY = os.getenv('CONSUMER_KEY')
 CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
 TWITTER_APP_NAME = os.getenv('TWITTER_APP_NAME')
-MAX_RESULTS = 10
+#max calls to Twitter API per search request.  If this is too high and you pick a popular
+#subject, you could use up all of the requests you're allotted with one search.  That's not 
+#something the demo app should do
+MAX_REQUESTS = 1
+
+#max results is 100 for the sandbox api and 500 for premium I don't really think I'm
+#ever going to want to change this, but maybe
+MAX_RESULTS = 100
 
 FULL_ENDPOINT =  'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
 MONTH_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json'

@@ -18,9 +18,19 @@
 	        <div class="navbar-header">
 	            <a class="navbar-brand" href="/">Twitter Analyze</a>
 	        </div>
+	        <div class="nav">
+	        {% if user.is_authenticated %}
+	        	{{ user.get_username }}
+	        {% endif %}
+	        </div>
 	        <ul class="nav justify-content-end"/>
+	        {% if user.is_authenticated %}
 	            <li class="nav-item"><a class="nav-link" href="{% url 'search' %}">Search</a></li>
-	            <li class="nav-item"><a class="nav-link" href="{% url 'saved_search' %}">Saved Search</a></li>
+                <li><a class='nav-link' href="{% url 'researcher_logout' %}">Logout</a></li>
+            {% else %}
+                <li><a class='nav-link' href="{% url 'researcher_login' %}">Login</a></li>
+            {% endif %}
+            	<li><a class='nav-link' href="{% url 'about' %}">About</a></li>
 	        </ul>
 	    </div>
 	</nav>

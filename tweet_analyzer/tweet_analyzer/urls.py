@@ -20,7 +20,8 @@ from website.views import Welcome, About
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', Welcome.as_view()),
-    path('about/', About.as_view()),
+    path('', Welcome.as_view(), name='welcome'),
+    path('about/', About.as_view(), name='about'),
     url(r'^search/', include('search.urls')),
+    url(r'^researcher/', include('researcher.urls')),
 ]
