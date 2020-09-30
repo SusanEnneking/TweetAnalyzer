@@ -14,7 +14,7 @@ import ast
 
 class TwitterHelper(object):
 
-	def __init__(self, searchq, from_date, to_date):
+	def __init__(self, searchq, from_date, to_date, bucket):
 		format = '%Y-%m-%dT%H:%M'
 		self.date_string_format = '%Y%m%d%H%M'
 		self.max_requests = settings.MAX_REQUESTS
@@ -28,6 +28,10 @@ class TwitterHelper(object):
 			self.to_date = datetime.strptime(to_date, format)
 		else:
 			self.to_date = None
+		if bucket:
+			self.bucket = bucket
+		else:
+			self.bucket = None
 
 
 
@@ -62,7 +66,8 @@ class TwitterHelper(object):
 				logger.error("Twitter didn't return any data. Message: {0}".format(tweets.message))
 				error_message = tweets.message
 				break
-		return {'message': error_message, 'data': all_tweets}
+		import pdb;pdb.set_trace()
+		return {'message': error_message, 'data': all_tweets, 'request_parameters': tweets.request_parameters, 'total_count': tweets.total_count}
 
 	def search(self, token, next, url):
 		headers = {"Authorization": "Bearer {0}".format(token)}
@@ -83,15 +88,21 @@ class TwitterHelper(object):
 		return twitter_response
 
 	def get_url(self):
-		url = settings.MONTH_ENDPOINT
+		if self.bucket:
+			url = settings.MONTH_COUNTS_ENDPOINT
+		else:
+			url = settings.MONTH_ENDPOINT
 		thirty_days_ago = datetime.today() - timedelta(days=30)
 		logger.info("Thirty days ago = {0}".format(thirty_days_ago))
 		if self.from_date and self.from_date < thirty_days_ago or \
-		   self.to_date and self.to_date < thirty_days_ago:
-		   logger.info("From date: {0}".format(self.from_date))
-		   logger.info("To date: {0}".format(self.to_date))
-		   logger.info("From or to date less than 30 days ago, using full archive endpoint")
-		   url = settings.FULL_ENDPOINT
+			self.to_date and self.to_date < thirty_days_ago:
+			logger.info("From date: {0}".format(self.from_date))
+			logger.info("To date: {0}".format(self.to_date))
+			logger.info("From or to date less than 30 days ago, using full archive endpoint")
+			if self.bucket:
+				url = settings.FULL_COUNTS_ENDPOINT
+			else:
+				url = settings.FULL_ENDPOINT
 		else:
 			logger.info("From and to dates are within 30 days, using 30 day endpoint")
 
@@ -101,8 +112,10 @@ class TwitterHelper(object):
 
 		if self.to_date:
 			url = "{0}&toDate={1}".format(url, self.to_date.strftime(self.date_string_format))
-
-		url = "{0}&maxResults={1}".format(url, self.max_results)
+		if self.bucket:
+			url = "{0}&bucket={1}".format(url, self.bucket)
+		else:
+			url = "{0}&maxResults={1}".format(url, self.max_results)
 		return url
 
 	def get_token(self):
@@ -112,27 +125,40 @@ class TwitterHelper(object):
 		return json_data['access_token']
 
 	def get_row(self, tweet):
-		return [tweet.created_at, tweet.id_str, tweet.source, tweet.text,
-				tweet.user.name, tweet.user.screen_name, tweet.user.location,
-				tweet.user.description, tweet.user.followers_count,
-				tweet.user.friends_count, tweet.user.statuses_count]
+		if self.bucket:
+			return [tweet.time_period, tweet.count]
+		else:
+			return [tweet.created_at, tweet.id_str, tweet.source, tweet.text,
+					tweet.user.name, tweet.user.screen_name, tweet.user.location,
+					tweet.user.description, tweet.user.followers_count,
+					tweet.user.friends_count, tweet.user.statuses_count]
 
 	def get_header(self):
-		return ['Created At', 'Id Str', 'Source', 'Text',
-				'User Name', 'User Screen Name', 'User Location',
-				'User Description', 'User Follower Count',
-				'User Friend Count', 'User Statuses Count']
+		if self.bucket:
+			return ['Time Period', 'Count']
+		else:
+			return ['Created At', 'Id Str', 'Source', 'Text',
+					'User Name', 'User Screen Name', 'User Location',
+					'User Description', 'User Follower Count',
+					'User Friend Count', 'User Statuses Count']
 
 class TwitterResponse(object):
 	def __init__(self, data):
 		self.message = data['message']
 		self.results = []
-		if data['data']:
-			if data['data']['next']:
+		if 'data' in data:
+			if 'next' in data['data']:
 				self.next = data['data']['next']
-			if data['data']['results']:
+			else:
+				self.next = None
+			if 'results' in data['data']:
 				for result in data['data']['results']:
-					tweet = TweetData(result)
+					if 'totalCount' in data['data']:
+						tweet = TweetCountData(result)
+						self.total_count = data['data']['totalCount']
+					else:
+						tweet = TweetData(result)
+						self.total_count = 0
 					self.results.append(tweet)
 			self.request_parameters = data['data']['requestParameters']
 
@@ -159,6 +185,13 @@ class TwitterUser(object):
 		self.followers_count = data['followers_count']
 		self.friends_count = data['friends_count']
 		self.statuses_count = data['statuses_count']
+
+class TweetCountData(object):
+
+	def __init__(self, data):
+		self.time_period = data['timePeriod']
+		self.count = data['count']
+
 
 class TwitterDataEncoder(JSONEncoder):
         def default(self, o):

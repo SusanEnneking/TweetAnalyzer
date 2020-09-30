@@ -44,6 +44,26 @@ def mocked_requests_get(*args, **kwargs):
 
     return MockResponse(None, 404)
 
+def mocked_count_requests_get(*args, **kwargs):
+    class MockResponse:
+        def __init__(self, content, status_code, encoding):
+            self.content = content
+            self.status_code = status_code
+            self.encoding = encoding
+
+        def content(self):
+            return self.content
+
+    if settings.MONTH_COUNTS_ENDPOINT in args[0] or settings.FULL_COUNTS_ENDPOINT in args[0]:
+        json_data = 'None'
+        message = ''
+        with open('common/test_data/test_count_response.json', 'rb') as json_file:
+            json_data = json_file.read()
+
+        return MockResponse(json_data, 200, 'utf-8')
+
+    return MockResponse(None, 404)
+
 
 class TwitterClassTestCase(unittest.TestCase):
 
@@ -54,7 +74,8 @@ class TwitterClassTestCase(unittest.TestCase):
         searchq = 'RGB'
         from_date = None
         to_date = None
-        twitter = TwitterHelper(searchq, from_date, to_date)
+        bucket = None
+        twitter = TwitterHelper(searchq, from_date, to_date, bucket)
 
         twitter_response = twitter.get_tweets()
         message = twitter_response['message']
@@ -62,6 +83,22 @@ class TwitterClassTestCase(unittest.TestCase):
         tweets = twitter_response['data']
         #The test_response.json file in mocked_requests_get contains 10 tweets
         self.assertEqual(len(tweets), 10)
+
+    @mock.patch('requests.get', side_effect=mocked_count_requests_get)
+    @mock.patch('requests.post', side_effect=mocked_requests_post)
+    def test_counts(self, mock_get, mock_post):
+        max_request_count = 1
+        searchq = 'RGB'
+        from_date = None
+        to_date = None
+        bucket = 'day'
+        twitter = TwitterHelper(searchq, from_date, to_date, bucket)
+        twitter_response = twitter.get_tweets()
+        message = twitter_response['message']
+        self.assertEqual(message, '')
+        total_count = twitter_response['total_count']
+        #The test_count_response.json file in mocked_count_requests_get totalCount = 1404
+        self.assertEqual(total_count, 1404)
 
 if __name__ == '__main__':
     unittest.main()

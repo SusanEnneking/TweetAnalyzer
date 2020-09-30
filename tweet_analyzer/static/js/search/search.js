@@ -1,7 +1,7 @@
 
 
 var SearchTwitter = (function(){
-	function sendSearch(isExport){
+	function sendSearch(isExport, isCounts){
 		if ($('#searchq').val().length == 0)
 		{
 			$('#errorMessage').removeClass("d-none");
@@ -13,6 +13,10 @@ var SearchTwitter = (function(){
 			var mainUrl  = getMainUrl();
 			if (isExport){
 				mainUrl = mainUrl + '&isExport=True';
+				if (isCounts){
+					//options are 'day', 'hour', 'minute'.  For now always day
+					mainUrl = mainUrl + '&bucket=day';
+				}
 				location.replace(mainUrl);
 				$('#returnedJson').html('');
 			}

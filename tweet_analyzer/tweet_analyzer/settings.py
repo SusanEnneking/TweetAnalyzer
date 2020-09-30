@@ -148,6 +148,8 @@ MAX_RESULTS = 100
 
 FULL_ENDPOINT =  'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
 MONTH_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json'
+FULL_COUNTS_ENDPOINT =  'https://api.twitter.com/1.1/tweets/search/fullarchive/dev/counts.json'
+MONTH_COUNTS_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/30day/dev/counts.json'
 OAUTH_ENDPOINT = 'https://api.twitter.com/oauth2/token'
 
 LOGGING = {
