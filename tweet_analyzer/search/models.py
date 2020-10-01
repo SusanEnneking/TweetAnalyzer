@@ -2,7 +2,7 @@ from django.db import models
 from researcher.models import Researcher
 
 class Search(models.Model):
-	researcher = models.ForeignKey(Researcher, related_name="researcher", on_delete=models.SET_NULL, null=True)
+	researcher = models.ForeignKey(Researcher, on_delete=models.SET_NULL, null=True)
 	#note, Sandbox max query length is 256
 	query = models.CharField(max_length=1024, default='')
 	from_date = models.DateTimeField(null=True)

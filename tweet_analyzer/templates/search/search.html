@@ -43,7 +43,7 @@
             </div>
             <br/>
             <div class="row">
-                <h1>Previous Searches</h1>
+                <h2>Your Previous Searches ({{object_list.count}})</h2>
             </div>
             <div class="row">
 
@@ -51,6 +51,32 @@
                 </div>
                 <div id="returnedJson">
                 </div>
+            </div>
+            <div class="overflow-auto">
+                <table>
+                    <tr>
+                        <th>Date (utc)</th>
+                        <th>Query Url</th>
+                        <th>From Date (utc)</th>
+                        <th>To Date (utc)</th>
+                        <th> Response</th>
+                        <th>Count</th>
+                        <th>Data Count</th>
+                        <th>Message</th>
+                    </tr>
+                {% for search in object_list %}
+                    <tr>
+                        <td>{{search.query_time}}</td>
+                        <td>{{search.query_url}}</td>
+                        <td>{{search.from_date}}</td>
+                        <td>{{search.to_date}}</td>
+                        <td>{{search.twitter_response_status}}</td>
+                        <td>{{search.count}}</td>
+                        <td>{{search.data_count}}</td>
+                        <td>{{search.message}}</td>
+                    </tr>
+                {% endfor %}
+                <table>
             </div>
         </div>
     </div>

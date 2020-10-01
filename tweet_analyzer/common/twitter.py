@@ -36,17 +36,17 @@ class TwitterHelper(object):
 			self.bucket = bucket
 		else:
 			self.bucket = None
-		import pdb;pdb.set_trace()
 		self.researcher = Researcher.objects.get(account__id = user.id)
 		self.set_url()
 		self.set_search_type()
 
 	@property
-	def limit_reached():
-		if self.search_type:
-			return self.researcher.has_reached_request_limit('self.search_type')
-		else:
-			return True
+	def limit_reached(self):
+		if self.search_type and self.search_type == '30Day':
+			return self.researcher.has_reached_30day_limit
+		elif self.search_type and self_search_type == 'FullArchive':
+			return self.researcher.has_reached_fullarchive_limit
+		return True
 
 	def get_tweets(self):
 		access_token = ''

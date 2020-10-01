@@ -76,7 +76,6 @@ class TwitterClassTestCase(unittest.TestCase):
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     @mock.patch('requests.post', side_effect=mocked_requests_post)
     def test_search(self, mock_get, mock_post):
-        max_request_count = 1
         searchq = 'RGB'
         from_date = None
         to_date = None
@@ -93,7 +92,6 @@ class TwitterClassTestCase(unittest.TestCase):
     @mock.patch('requests.get', side_effect=mocked_count_requests_get)
     @mock.patch('requests.post', side_effect=mocked_requests_post)
     def test_counts(self, mock_get, mock_post):
-        max_request_count = 1
         searchq = 'RGB'
         from_date = None
         to_date = None

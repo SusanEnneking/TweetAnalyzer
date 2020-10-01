@@ -1,9 +1,9 @@
 from django.conf.urls import url
 
-from .views import Search, get_tweets, limit_reached
+from .views import SearchTweets, get_tweets, limit_reached
 
 urlpatterns = [
-    url(r'search$', Search.as_view(), name="search"),
+    url(r'search$', SearchTweets.as_view(), name="search"),
     url(r'get_tweets$', get_tweets, name="get_tweets"),
     url(r'limit_reached$', limit_reached, name="limit_reached"),
     # url(r'new_invitation$', new_invitation, name="player_new_invitation"),

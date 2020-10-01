@@ -9,30 +9,46 @@ var SearchTwitter = (function(){
 		else
 		{
 			$('#errorMessage').addClass("d-none");
-			$('#returnedJson').val('');
-			var mainUrl  = getMainUrl();
-			if (isExport){
-				mainUrl = mainUrl + '&isExport=True';
-				if (isCounts){
-					//options are 'day', 'hour', 'minute'.  For now always day
-					mainUrl = mainUrl + '&bucket=day';
-				}
-				location.replace(mainUrl);
-				$('#returnedJson').html('');
-			}
-			else {
-			$.getJSON(mainUrl, {})
-				.done(function(data){
-					$('#returnedJson').html(JSON.stringify(data));
-				})
-				.fail(function( jqxhr, textStatus, error ) {
-				    var err = textStatus + ", " + error;
-				    $('#returnedJson').html(jqxhr.responseText);
-				});
-			}
 		}
+		$('#returnedJson').html('')
+		$.get('limit_reached', {})
+			.done(function(data){
+				if (data != 'True'){
+					makeRequest(isExport, isCounts);
+				}
+				else{
+					$('#returnedJson').html('You have reached your request limit.  Please contact susanenneking@gmail.com to increase your limit.');
+				}
+			})
+			.fail(function( jqxhr, textStatus, error ) {
+			    var err = textStatus + ", " + error;
+			    $('#returnedJson').html(jqxhr.responseText);
+			});
 	}
 
+	function makeRequest(isExport, isCounts){
+		$('#returnedJson').val('');
+		var mainUrl  = getMainUrl();
+		if (isExport){
+			mainUrl = mainUrl + '&isExport=True';
+			if (isCounts){
+				//options are 'day', 'hour', 'minute'.  For now always day
+				mainUrl = mainUrl + '&bucket=day';
+			}
+			location.replace(mainUrl);
+			$('#returnedJson').html('');
+		}
+		else {
+		$.getJSON(mainUrl, {})
+			.done(function(data){
+				$('#returnedJson').html(JSON.stringify(data));
+			})
+			.fail(function( jqxhr, textStatus, error ) {
+			    var err = textStatus + ", " + error;
+			    $('#returnedJson').html(jqxhr.responseText);
+			});
+		}
+	}
 
 	function getMainUrl(){
 		$('#errorMessage').addClass("hide");

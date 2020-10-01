@@ -6,6 +6,7 @@ import logging
 logger = logging.getLogger('django')
 
 
+
 class Researcher(models.Model):
 	TIMEZONES = tuple(zip(pytz.all_timezones, pytz.all_timezones))
 	account = models.OneToOneField(User, related_name="account", on_delete=models.CASCADE)
@@ -15,15 +16,18 @@ class Researcher(models.Model):
 	request_limit_fullarchive = models.IntegerField(default=0)
 
 	@property
-	def has_reached_request_limit(self, search_type):
-		if search_type == '30Day':
-			pass
-		elif search_type == 'FullArchive':
-			pass
-		logger.error("Invalid Search Type: {0}".format(search_type))
-		return True
+	def has_reached_30day_limit(self):
+		used = self.search_set.filter(researcher__id = self.id, query_url__icontains='30day')
+		return self.request_limit_30day <= used.count()
 
 
+	@property
+	def has_reached_fullarchive_limit(self):
+		used = self.search_set.filter(researcher__id = self.id, query_url__icontains='fullarchive')
+		return self.request_limit_fullarchive <= used.count()
+
+	def __str__(self):
+		return self.account.email
 
 def increment_login_count(sender, user, request, **kwargs):
 
