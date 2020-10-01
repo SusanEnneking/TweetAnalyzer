@@ -8,6 +8,8 @@ class ViewRequestFactoryTestMixin(object):
     def setUp(self):
         self.user = User.objects.create_user(
             username='tester', email='tester@tester.com', password='top_secret')
+
+
         
     def get_response(self, method):
         factory = RequestFactory()

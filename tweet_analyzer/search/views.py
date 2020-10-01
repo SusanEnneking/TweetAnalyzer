@@ -27,8 +27,8 @@ def get_tweets(request):
 	to_date = request.GET.get('toDate', None)
 	bucket = request.GET.get('bucket', None)
 	is_export = request.GET.get('isExport', None)
-	twitter = TwitterHelper(searchq, from_date, to_date, bucket)
-	twitter_response = twitter.get_tweets(request.user)
+	twitter = TwitterHelper(searchq, from_date, to_date, bucket, request.user)
+	twitter_response = twitter.get_tweets()
 	if twitter_response['message'] and twitter_response['message'] != '':
 		return HttpResponseBadRequest(twitter_response['message'])
 	tweets = twitter_response['data']
@@ -50,5 +50,21 @@ def get_tweets(request):
 	else:
 		json_string = json.dumps([tweet.__dict__ for tweet in tweets], cls=TwitterDataEncoder)
 		return HttpResponse(json_string, content_type='application/json')
+
+@login_required
+def limit_reached(request):
+	import pdb;pdb.set_trace()
+	max_results = None
+	searchq = None
+	from_date = None
+	to_date = None
+	searchq	= request.GET.get('searchq', '')
+	from_date = request.GET.get('fromDate', None)
+	to_date = request.GET.get('toDate', None)
+	bucket = request.GET.get('bucket', None)
+	is_export = request.GET.get('isExport', None)
+	twitter = TwitterHelper(searchq, from_date, to_date, bucket, request.user)
+	return HttpResponse(twitter.limit_reached())
+
 
 

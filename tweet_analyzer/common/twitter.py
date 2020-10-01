@@ -18,8 +18,7 @@ import pytz
 
 class TwitterHelper(object):
 
-
-	def __init__(self, searchq, from_date, to_date, bucket):
+	def __init__(self, searchq, from_date, to_date, bucket, user):
 		format = '%Y-%m-%dT%H:%M'
 		self.date_string_format = '%Y%m%d%H%M'
 		self.max_requests = settings.MAX_REQUESTS
@@ -37,16 +36,22 @@ class TwitterHelper(object):
 			self.bucket = bucket
 		else:
 			self.bucket = None
-		self.researcher = None
+		import pdb;pdb.set_trace()
+		self.researcher = Researcher.objects.get(account__id = user.id)
+		self.set_url()
+		self.set_search_type()
 
+	@property
+	def limit_reached():
+		if self.search_type:
+			return self.researcher.has_reached_request_limit('self.search_type')
+		else:
+			return True
 
-
-	def get_tweets(self, user):
+	def get_tweets(self):
 		access_token = ''
 		access_token = self.get_token()
-		self.researcher = Researcher.objects.get(account = user)
-		url = self.get_url()
-		logger.debug("Url: {0}".format(url))
+		logger.debug("Url: {0}".format(self.url))
 		all_tweets = []
 		max_requests = self.max_requests
 		logger.info("Max Results: {0}".format(max_requests))
@@ -59,7 +64,7 @@ class TwitterHelper(object):
 				import pdb;pdb.set_trace()
 			call_count = call_count + 1
 			logger.info("Searching ...")
-			tweets = self.search(access_token, next_indicator, url, user)
+			tweets = self.search(access_token, next_indicator)
 			if tweets.message == '' and tweets.results and len(tweets.results) > 0:
 				all_tweets = all_tweets + tweets.results
 				next_prop_exists = False
@@ -76,9 +81,9 @@ class TwitterHelper(object):
 				break
 		return {'message': error_message, 'data': all_tweets, 'request_parameters': tweets.request_parameters, 'total_count': tweets.total_count}
 
-	def search(self, token, next, url, user):
+	def search(self, token, next):
 		headers = {"Authorization": "Bearer {0}".format(token)}
-		url = url + next
+		url = self.url + next
 		response = requests.get(url, headers=headers)
 		json_data = None
 		message = ''
@@ -91,7 +96,6 @@ class TwitterHelper(object):
 		else:
 			message = "Error: Status-{0} Message-{1} {2}".format(response.status_code, response.reason, response.text)
 			logger.error(message)
-		import pdb;pdb.set_trace()
 
 		twitter_response = TwitterResponse({'message': message, 'data':json_data})
 
@@ -109,17 +113,18 @@ class TwitterHelper(object):
 
 		return twitter_response
 
-	def get_url(self):
+	def set_url(self):
 
 		if self.bucket:
 			url = settings.MONTH_COUNTS_ENDPOINT
 		else:
 			url = settings.MONTH_ENDPOINT
-		import pdb;pdb.set_trace()
 		thirty_days_ago = timezone.now() - timedelta(days=30)
 		tz = pytz.timezone(self.researcher.time_zone)
-		self.from_date = tz.normalize(tz.localize(self.from_date)).astimezone(pytz.utc)
-		self.to_date = tz.normalize(tz.localize(self.to_date)).astimezone(pytz.utc)
+		if (self.from_date):
+			self.from_date = tz.normalize(tz.localize(self.from_date)).astimezone(pytz.utc)
+		if (self.to_date):
+			self.to_date = tz.normalize(tz.localize(self.to_date)).astimezone(pytz.utc)
 		logger.info("Thirty days ago = {0}".format(thirty_days_ago))
 		if self.from_date and self.from_date < thirty_days_ago or \
 			self.to_date and self.to_date < thirty_days_ago:
@@ -143,7 +148,13 @@ class TwitterHelper(object):
 			url = "{0}&bucket={1}".format(url, self.bucket)
 		else:
 			url = "{0}&maxResults={1}".format(url, self.max_results)
-		return url
+		self.url = url
+
+	def set_search_type(self):
+		if settings.FULL_LITERAL in self.url:
+			self.search_type = 'FullArchive'
+		else:
+			self.search_type = '30Day'
 
 	def get_token(self):
 		data = [('grant_type', 'client_credentials')]

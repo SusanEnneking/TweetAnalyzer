@@ -9,6 +9,8 @@ import datetime
 from datetime import datetime, timedelta
 from urllib.parse import urlencode
 import ast
+from django.contrib.auth.models import User
+from researcher.models import Researcher
 
 
 def mocked_requests_post(*args, **kwargs):
@@ -66,6 +68,10 @@ def mocked_count_requests_get(*args, **kwargs):
 
 
 class TwitterClassTestCase(unittest.TestCase):
+    def setUp(self):
+        self.user, created = User.objects.get_or_create(
+            username='twitterTester', email='twittertester@tester.com', password='top_secret')
+        self.researcher, created = Researcher.objects.get_or_create(account = self.user)
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     @mock.patch('requests.post', side_effect=mocked_requests_post)
@@ -75,9 +81,9 @@ class TwitterClassTestCase(unittest.TestCase):
         from_date = None
         to_date = None
         bucket = None
-        twitter = TwitterHelper(searchq, from_date, to_date, bucket)
+        twitter = TwitterHelper(searchq, from_date, to_date, bucket, self.user)
 
-        twitter_response = twitter.get_tweets(mock_get.user)
+        twitter_response = twitter.get_tweets()
         message = twitter_response['message']
         self.assertEqual(message, '')
         tweets = twitter_response['data']
@@ -92,8 +98,8 @@ class TwitterClassTestCase(unittest.TestCase):
         from_date = None
         to_date = None
         bucket = 'day'
-        twitter = TwitterHelper(searchq, from_date, to_date, bucket)
-        twitter_response = twitter.get_tweets(mock_get.user)
+        twitter = TwitterHelper(searchq, from_date, to_date, bucket, self.user)
+        twitter_response = twitter.get_tweets()
         message = twitter_response['message']
         self.assertEqual(message, '')
         total_count = twitter_response['total_count']
