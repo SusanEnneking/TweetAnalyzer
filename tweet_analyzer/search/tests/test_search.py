@@ -77,7 +77,7 @@ class TwitterClassTestCase(unittest.TestCase):
         bucket = None
         twitter = TwitterHelper(searchq, from_date, to_date, bucket)
 
-        twitter_response = twitter.get_tweets()
+        twitter_response = twitter.get_tweets(mock_get.user)
         message = twitter_response['message']
         self.assertEqual(message, '')
         tweets = twitter_response['data']
@@ -93,7 +93,7 @@ class TwitterClassTestCase(unittest.TestCase):
         to_date = None
         bucket = 'day'
         twitter = TwitterHelper(searchq, from_date, to_date, bucket)
-        twitter_response = twitter.get_tweets()
+        twitter_response = twitter.get_tweets(mock_get.user)
         message = twitter_response['message']
         self.assertEqual(message, '')
         total_count = twitter_response['total_count']

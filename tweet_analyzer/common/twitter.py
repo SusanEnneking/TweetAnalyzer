@@ -7,12 +7,17 @@ from json import JSONEncoder
 from django.conf import settings
 import datetime
 from datetime import datetime, timedelta
+from django.utils import timezone
+from django.utils.timezone import make_aware
 from urllib.parse import urlencode
 import ast
-
+from search.models import Search
+from researcher.models import Researcher
+import pytz
 
 
 class TwitterHelper(object):
+
 
 	def __init__(self, searchq, from_date, to_date, bucket):
 		format = '%Y-%m-%dT%H:%M'
@@ -32,12 +37,14 @@ class TwitterHelper(object):
 			self.bucket = bucket
 		else:
 			self.bucket = None
+		self.researcher = None
 
 
 
-	def get_tweets(self):
+	def get_tweets(self, user):
 		access_token = ''
 		access_token = self.get_token()
+		self.researcher = Researcher.objects.get(account = user)
 		url = self.get_url()
 		logger.debug("Url: {0}".format(url))
 		all_tweets = []
@@ -48,10 +55,11 @@ class TwitterHelper(object):
 		next_indicator = ''
 		error_message = ''
 		while (more_tweets and call_count < max_requests):
-			import pdb;pdb.set_trace()
+			if (call_count > 1):
+				import pdb;pdb.set_trace()
 			call_count = call_count + 1
 			logger.info("Searching ...")
-			tweets = self.search(access_token, next_indicator, url)
+			tweets = self.search(access_token, next_indicator, url, user)
 			if tweets.message == '' and tweets.results and len(tweets.results) > 0:
 				all_tweets = all_tweets + tweets.results
 				next_prop_exists = False
@@ -66,10 +74,9 @@ class TwitterHelper(object):
 				logger.error("Twitter didn't return any data. Message: {0}".format(tweets.message))
 				error_message = tweets.message
 				break
-		import pdb;pdb.set_trace()
 		return {'message': error_message, 'data': all_tweets, 'request_parameters': tweets.request_parameters, 'total_count': tweets.total_count}
 
-	def search(self, token, next, url):
+	def search(self, token, next, url, user):
 		headers = {"Authorization": "Bearer {0}".format(token)}
 		url = url + next
 		response = requests.get(url, headers=headers)
@@ -84,15 +91,35 @@ class TwitterHelper(object):
 		else:
 			message = "Error: Status-{0} Message-{1} {2}".format(response.status_code, response.reason, response.text)
 			logger.error(message)
+		import pdb;pdb.set_trace()
+
 		twitter_response = TwitterResponse({'message': message, 'data':json_data})
+
+		search_info = Search.objects.create(
+			researcher = self.researcher,
+			query = twitter_response.request_parameters,
+			from_date = self.from_date,
+			to_date = self.to_date,
+			query_time = timezone.now(),
+			twitter_response_status = response.status_code,
+			query_url = url,
+			count = twitter_response.total_count,
+			data_count = len(twitter_response.results),
+			message = twitter_response.message)
+
 		return twitter_response
 
 	def get_url(self):
+
 		if self.bucket:
 			url = settings.MONTH_COUNTS_ENDPOINT
 		else:
 			url = settings.MONTH_ENDPOINT
-		thirty_days_ago = datetime.today() - timedelta(days=30)
+		import pdb;pdb.set_trace()
+		thirty_days_ago = timezone.now() - timedelta(days=30)
+		tz = pytz.timezone(self.researcher.time_zone)
+		self.from_date = tz.normalize(tz.localize(self.from_date)).astimezone(pytz.utc)
+		self.to_date = tz.normalize(tz.localize(self.to_date)).astimezone(pytz.utc)
 		logger.info("Thirty days ago = {0}".format(thirty_days_ago))
 		if self.from_date and self.from_date < thirty_days_ago or \
 			self.to_date and self.to_date < thirty_days_ago:

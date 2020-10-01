@@ -22,14 +22,13 @@ def get_tweets(request):
 	searchq = None
 	from_date = None
 	to_date = None
-
 	searchq	= request.GET.get('searchq', '')
 	from_date = request.GET.get('fromDate', None)
 	to_date = request.GET.get('toDate', None)
 	bucket = request.GET.get('bucket', None)
 	is_export = request.GET.get('isExport', None)
 	twitter = TwitterHelper(searchq, from_date, to_date, bucket)
-	twitter_response = twitter.get_tweets()
+	twitter_response = twitter.get_tweets(request.user)
 	if twitter_response['message'] and twitter_response['message'] != '':
 		return HttpResponseBadRequest(twitter_response['message'])
 	tweets = twitter_response['data']
