@@ -15,7 +15,6 @@ class SearchTweets(LoginRequiredMixin, ListView):
 	template_name = 'search/search.html'
 	redirect_field_name = 'welcome'
 	login_url = 'researcher_login'
-	import pdb;pdb.set_trace()
 	model = Search
 
 	def get_queryset(self):
