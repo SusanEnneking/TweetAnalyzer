@@ -7,3 +7,5 @@ test_data/*
 db.sqlite3
 *.log
 logs/*
+.tfstate
+.tfstate.backup
