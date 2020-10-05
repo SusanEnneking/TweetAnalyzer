@@ -99,6 +99,7 @@ class TwitterHelper(object):
 
 		twitter_response = TwitterResponse({'message': message, 'data':json_data})
 
+
 		search_info = Search.objects.create(
 			researcher = self.researcher,
 			query = twitter_response.request_parameters,
@@ -184,7 +185,10 @@ class TwitterResponse(object):
 	def __init__(self, data):
 		self.message = data['message']
 		self.results = []
-		if 'data' in data:
+		self.total_count = 0
+		self.next = None
+		self.request_parameters = None
+		if 'data' in data and data['data'] != None:
 			if 'next' in data['data']:
 				self.next = data['data']['next']
 			else:

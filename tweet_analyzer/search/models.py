@@ -4,7 +4,7 @@ from researcher.models import Researcher
 class Search(models.Model):
 	researcher = models.ForeignKey(Researcher, on_delete=models.SET_NULL, null=True)
 	#note, Sandbox max query length is 256
-	query = models.CharField(max_length=1024, default='')
+	query = models.CharField(max_length=1024, default='', null=True)
 	from_date = models.DateTimeField(null=True)
 	to_date = models.DateTimeField(null=True)
 	query_time =models.DateTimeField(auto_now_add=True)
