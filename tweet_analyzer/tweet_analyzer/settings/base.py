@@ -25,10 +25,8 @@ SECRET_KEY = os.getenv("DJANGO_SECRET_KEY")
 # SECURITY WARNING: don't run with debug turned on in production!
 ENVIRONMENT = os.getenv("DJANGO_ENVIRONMENT")
 
-DEBUG = False
+DEBUG = True
 
-if ENVIRONMENT == 'local':
-    DEBUG = True
 
 ALLOWED_HOSTS = []
 
@@ -45,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'timezone_field',
     'website',
     'search',
     'researcher',
@@ -80,7 +77,6 @@ TEMPLATES = [
     },
 ]
 
-WSGI_APPLICATION = 'tweet_analyzer.wsgi.application'
 
 
 # Database

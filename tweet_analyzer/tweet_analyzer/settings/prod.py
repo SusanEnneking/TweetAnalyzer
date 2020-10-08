@@ -16,5 +16,8 @@ DATABASES = {
     },
 }
 
+DEBUG = False
 
 
+ALLOWED_HOSTS = ['localhost', 'www.susanenneking.dev', 'susanenneking.dev']
+WSGI_APPLICATION = 'wsgi.application'
