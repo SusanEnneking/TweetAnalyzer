@@ -8,7 +8,7 @@ DATABASES = {
         'USER': os.getenv('PG_USER'),
         'PASSWORD': os.getenv('PG_PASSWORD'),
         'HOST': os.getenv('PG_HOST'),
-        'PORT': '25060',   
+        'PORT': '25060',
         'OPTIONS': {
             'sslmode': 'verify-full',
             'sslrootcert': os.path.join(BASE_DIR, 'ca-certificate.crt'),
@@ -18,6 +18,5 @@ DATABASES = {
 
 DEBUG = False
 
-
-ALLOWED_HOSTS = ['localhost', 'www.susanenneking.dev', 'susanenneking.dev']
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 WSGI_APPLICATION = 'wsgi.application'

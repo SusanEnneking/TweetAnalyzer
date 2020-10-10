@@ -77,8 +77,6 @@ TEMPLATES = [
     },
 ]
 
-
-
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
@@ -134,18 +132,18 @@ STATICFILES_DIRS = [
 CONSUMER_KEY = os.getenv('CONSUMER_KEY')
 CONSUMER_SECRET = os.getenv('CONSUMER_SECRET')
 TWITTER_APP_NAME = os.getenv('TWITTER_APP_NAME')
-#max calls to Twitter API per search request.  If this is too high and you pick a popular
-#subject, you could use up all of the requests you're allotted with one search.  That's not 
-#something the demo app should do
+# max calls to Twitter API per search request.  If this is too high and you pick a popular
+# subject, you could use up all of the requests you're allotted with one search.  That's not
+# something the demo app should do
 MAX_REQUESTS = 1
 
-#max results is 100 for the sandbox api and 500 for premium I don't really think I'm
-#ever going to want to change this, but maybe
+# max results is 100 for the sandbox api and 500 for premium I don't really think I'm
+# ever going to want to change this, but maybe
 MAX_RESULTS = 100
 
-FULL_ENDPOINT =  'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
+FULL_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
 MONTH_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json'
-FULL_COUNTS_ENDPOINT =  'https://api.twitter.com/1.1/tweets/search/fullarchive/dev/counts.json'
+FULL_COUNTS_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/fullarchive/dev/counts.json'
 MONTH_COUNTS_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/30day/dev/counts.json'
 OAUTH_ENDPOINT = 'https://api.twitter.com/oauth2/token'
 FULL_LITERAL = 'fullarchive'
@@ -161,20 +159,20 @@ LOGGING = {
     },
     'handlers': {
         'django': {
-            'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'logs/django/django_console.log',
-            'maxBytes': 1024*1024*5, # 5 MB
+            'maxBytes': 1024 * 1024 * 5,
             'backupCount': 5,
-            'formatter':'standard',
+            'formatter': 'standard',
         },
         'django.request': {
-            'level':'DEBUG',
-            'class':'logging.handlers.RotatingFileHandler',
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
             'filename': 'logs/django/django_request.log',
-            'maxBytes': 1024*1024*5, # 5 MB
+            'maxBytes': 1024 * 1024 * 5,
             'backupCount': 5,
-            'formatter':'standard',
+            'formatter': 'standard',
         },
     },
     'loggers': {
@@ -189,5 +187,3 @@ LOGGING = {
         'level': 'WARNING',
     },
 }
-
-

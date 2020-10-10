@@ -22,9 +22,10 @@ def mocked_requests_post(*args, **kwargs):
         def json(self):
             return self.json_data
     if settings.OAUTH_ENDPOINT in args[0]:
-        return MockResponse({"access_token":"You have been granted access"}, 200)
+        return MockResponse({"access_token": "You have been granted access"}, 200)
 
     return MockResponse(None, 404)
+
 
 def mocked_requests_get(*args, **kwargs):
     class MockResponse:
@@ -45,6 +46,7 @@ def mocked_requests_get(*args, **kwargs):
         return MockResponse(json_data, 200, 'utf-8')
 
     return MockResponse(None, 404)
+
 
 def mocked_count_requests_get(*args, **kwargs):
     class MockResponse:
@@ -71,7 +73,7 @@ class TwitterClassTestCase(unittest.TestCase):
     def setUp(self):
         self.user, created = User.objects.get_or_create(
             username='twitterTester', email='twittertester@tester.com', password='top_secret')
-        self.researcher, created = Researcher.objects.get_or_create(account = self.user)
+        self.researcher, created = Researcher.objects.get_or_create(account=self.user)
 
     @mock.patch('requests.get', side_effect=mocked_requests_get)
     @mock.patch('requests.post', side_effect=mocked_requests_post)
@@ -86,7 +88,7 @@ class TwitterClassTestCase(unittest.TestCase):
         message = twitter_response['message']
         self.assertEqual(message, '')
         tweets = twitter_response['data']
-        #The test_response.json file in mocked_requests_get contains 10 tweets
+        # The test_response.json file in mocked_requests_get contains 10 tweets
         self.assertEqual(len(tweets), 10)
 
     @mock.patch('requests.get', side_effect=mocked_count_requests_get)
@@ -101,8 +103,9 @@ class TwitterClassTestCase(unittest.TestCase):
         message = twitter_response['message']
         self.assertEqual(message, '')
         total_count = twitter_response['total_count']
-        #The test_count_response.json file in mocked_count_requests_get totalCount = 1404
+        # The test_count_response.json file in mocked_count_requests_get totalCount = 1404
         self.assertEqual(total_count, 1404)
+
 
 if __name__ == '__main__':
     unittest.main()
