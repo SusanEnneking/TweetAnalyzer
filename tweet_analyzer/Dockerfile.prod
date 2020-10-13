@@ -1,0 +1,62 @@
+###########
+# BUILDER #
+###########
+
+# pull official base image
+FROM python:3.7-buster as builder
+
+# set work directory
+WORKDIR usr/src/tweet_analyzer
+
+# set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+
+# lint
+RUN pip install --upgrade pip
+RUN pip install flake8
+COPY . .
+RUN flake8 --ignore=E501,F401,F811,F841,F403,F405,.
+
+# install dependencies
+COPY ./requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /usr/src/tweet_analyzer/wheels -r requirements.txt
+
+
+#########
+# FINAL #
+#########
+
+# pull official base image
+FROM python:3.7-buster
+
+# create directory for the tweet_analyzer user
+RUN mkdir -p /home/tweet_analyzer
+
+# create the tweet_analyzer user
+RUN groupadd tweet_analyzer && useradd -g tweet_analyzer -s /bin/sh tweet_analyzer
+
+# create the appropriate directories
+ENV HOME=/home/tweet_analyzer
+ENV APP_HOME=/home/tweet_analyzer/web
+RUN mkdir $APP_HOME
+RUN mkdir $APP_HOME/static
+RUN mkdir $APP_HOME/mediafiles
+WORKDIR $APP_HOME
+
+# install dependencies
+# RUN apk update && apk add libpq
+# RUN apt-get -y update && apt install libpq
+COPY --from=builder /usr/src/tweet_analyzer/wheels /wheels
+COPY --from=builder /usr/src/tweet_analyzer/requirements.txt .
+RUN pip install --no-cache /wheels/*
+
+# copy project
+COPY . $APP_HOME
+
+# chown all the files to the tweet_analyzer user
+RUN chown -R tweet_analyzer:tweet_analyzer $APP_HOME
+
+# change to the tweet_analyzer user
+USER tweet_analyzer
