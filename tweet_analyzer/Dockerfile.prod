@@ -38,10 +38,11 @@ RUN mkdir -p /home/tweet_analyzer
 RUN groupadd tweet_analyzer && useradd -g tweet_analyzer -s /bin/sh tweet_analyzer
 
 # create the appropriate directories
+ENV TOP=/home
 ENV HOME=/home/tweet_analyzer
 ENV APP_HOME=/home/tweet_analyzer/web
 RUN mkdir $APP_HOME
-RUN mkdir $APP_HOME/static
+RUN mkdir $APP_HOME/staticfiles
 RUN mkdir $APP_HOME/mediafiles
 WORKDIR $APP_HOME
 
@@ -57,6 +58,15 @@ COPY . $APP_HOME
 
 # chown all the files to the tweet_analyzer user
 RUN chown -R tweet_analyzer:tweet_analyzer $APP_HOME
+
+# hopefully, this give nginx access to static files don't try this at home and if # you do, use 751 instead of 777. Only leaving this for a bit, then I'll delete 
+# these comments.  This DID NOT WORK FOR ME
+
+# RUN chmod 777 $APP_HOME
+# RUN chmod 777 $TOP
+# RUN chmod 777 $HOME
+# RUN chmod 777 $APP_HOME/staticfiles
+
 
 # change to the tweet_analyzer user
 USER tweet_analyzer

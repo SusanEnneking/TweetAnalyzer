@@ -182,5 +182,11 @@ LOGGING = {
         'level': 'WARNING',
     },
 }
-STATIC_URL = "/static/"
-STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+STATIC_URL = "/staticfiles/"
+
+ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS').split(' ')
+
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]

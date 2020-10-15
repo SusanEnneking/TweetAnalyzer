@@ -17,6 +17,8 @@ from django.conf.urls import url, include
 from django.contrib import admin
 from django.urls import path
 from website.views import Welcome, About
+from django.conf import settings
+from django.conf.urls.static import static
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -24,4 +26,4 @@ urlpatterns = [
     path('about/', About.as_view(), name='about'),
     url(r'^search/', include('search.urls')),
     url(r'^researcher/', include('researcher.urls')),
-]
+] + static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

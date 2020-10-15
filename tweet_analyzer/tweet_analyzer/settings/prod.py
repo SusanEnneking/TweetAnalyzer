@@ -16,9 +16,8 @@ DATABASES = {
     },
 }
 
-DEBUG = False
-
+DEBUG = True
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static")]
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 WSGI_APPLICATION = 'wsgi.application'
-
-ALLOWED_HOSTS = os.getenv('DJANGO_ALLOWED_HOSTS')

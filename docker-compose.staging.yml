@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile.prod
     command: gunicorn tweet_analyzer.wsgi:application --bind 0.0.0.0:8000
     volumes:
-      - static_volume:/home/tweet_analyzer/web/static
+      - static_volume:/home/tweet_analyzer/web/staticfiles
       - media_volume:/home/tweet_analyzer/web/mediafiles
     expose:
       - 8000
@@ -22,7 +22,7 @@ services:
       - 443:443
       - 80:80
     volumes:
-      - static_volume:/home/tweet_analyzer/web/static
+      - static_volume:/home/tweet_analyzer/web/staticfiles
       - media_volume:/home/tweet_analyzer/web/mediafiles
       - certs:/etc/nginx/certs
       - html:/usr/share/nginx/html

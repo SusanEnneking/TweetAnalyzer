@@ -11,3 +11,6 @@ Generate Django Secret Key: (thanks https://humberto.io/blog/tldr-generate-djang
 
 Used this tutorial to begin Digital Ocean Terraform set-up:
 	https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean
+
+If you want to test and don't want to hit Letsencrypt's prod limits, put this line in the env_staging_proxy-companion.env file:
+	export ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory
