@@ -1,0 +1,2 @@
+export DEFAULT_EMAIL={your email address}
+export NGINX_PROXY_CONTAINER=nginx-proxy
