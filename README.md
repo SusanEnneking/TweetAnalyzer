@@ -25,27 +25,25 @@ Now you can log in as the super user you just created and get going.
 
 ## Helpful Info (as in I can't remember anything) ##
 
-### View sqlite3 db:
+### View sqlite3 db: ###
 	python manage.py dbshell
 	.tables will show all tables
 	PRAGMA table_info(table_name) will list all columns
 
-### Generate Django Secret Key: (thanks [Humberto Rocha](https://humberto.io/blog/tldr-generate-django-secret-key/)
+### Generate Django Secret Key: --thanks [Humberto Rocha](https://humberto.io/blog/tldr-generate-django-secret-key/) ###
 	python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
 
 ### Used [Jan Giacomelli's tutorial](https://testdriven.io/blog/django-lets-encrypt/) for my current production set up ###
 	I wasn't using their base project so a few things were different.  Mostly, I didn't try to set up the Postgresql db on the same server.  I have it set up on a managed db server in Digtial Ocean.
 
 
-### Used this tutorial to begin Digital Ocean Terraform set-up:
-	https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean
-
+### Used [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean) to begin Digital Ocean Terraform set-up: ###
 	I didn't end up using this set_up.  The Terraform for my current Digital Ocean set up is a Todo item.
 
-### If you want to test and don't want to hit Letsencrypt's prod limits, put this line in the env_staging_proxy-companion.env file:
+### If you want to test and don't want to hit Letsencrypt's prod limits, put this line in the env_staging_proxy-companion.env file: ###
 	export ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory
 
-### Helpful Docker Commands:
+### Helpful Docker Commands: ###
 	docker system prune (get rid of all containers once you don't need them)
 	docker-compose -f docker-compose.prod.yml down -v (stop all of your running containers)
 	docker-compose -f docker-compose.prod.yml up -d --build (build and bring containers up)
