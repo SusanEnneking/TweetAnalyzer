@@ -38,7 +38,7 @@ Now you can log in as the super user you just created and get going.
 
 
 ##### Used [this tutorial](https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean) to begin Digital Ocean Terraform set-up: #####
-	I didn't end up using this set_up.  The Terraform for my current Digital Ocean set up is a Todo item.
+	I didn't end up using this set_up.  The Terraform for my current Digital Ocean set up is a Todo item.  The nice thing about the current set-up is that it can all be hosted on one droplet.  Not a great idea for a high-traffic, production site, but I don't expect high-traffic on this guy.  I don't even allow people to register themselves because I don't want just anyone to use my Twitter credentials and eat up my query allotment.  So, for this application, the one-server set-up is great.
 
 ##### If you want to test a staging deploy and don't want to hit Letsencrypt's prod limits, put this line in the env_staging_proxy-companion.env file: #####
 	export ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory
