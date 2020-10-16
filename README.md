@@ -1,7 +1,7 @@
 # TweetAnalyzer
 
 
-** Twitter Research Data Retrieval And Analysis **
+## Twitter Research Data Retrieval And Analysis ##
 
 Before you can use this code, you'll need to get a developer account from [Twitter](https://developer.twitter.com/en/apply-for-access). Back when I did it, it took a few days for Twitter to approve my request and provide keys.
 
@@ -30,11 +30,17 @@ Now you can log in as the super user you just created and get going.
 	.tables will show all tables
 	PRAGMA table_info(table_name) will list all columns
 
-### Generate Django Secret Key: (thanks https://humberto.io/blog/tldr-generate-django-secret-key/)
+### Generate Django Secret Key: (thanks [Humberto Rocha](https://humberto.io/blog/tldr-generate-django-secret-key/)
 	python3 -c 'from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())'
+
+### Used [Jan Giacomelli's tutorial](https://testdriven.io/blog/django-lets-encrypt/) for my current production set up ###
+	I wasn't using their base project so a few things were different.  Mostly, I didn't try to set up the Postgresql db on the same server.  I have it set up on a managed db server in Digtial Ocean.
+
 
 ### Used this tutorial to begin Digital Ocean Terraform set-up:
 	https://www.digitalocean.com/community/tutorials/how-to-use-terraform-with-digitalocean
+
+	I didn't end up using this set_up.  The Terraform for my current Digital Ocean set up is a Todo item.
 
 ### If you want to test and don't want to hit Letsencrypt's prod limits, put this line in the env_staging_proxy-companion.env file:
 	export ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory
