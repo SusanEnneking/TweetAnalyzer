@@ -14,3 +14,12 @@ Used this tutorial to begin Digital Ocean Terraform set-up:
 
 If you want to test and don't want to hit Letsencrypt's prod limits, put this line in the env_staging_proxy-companion.env file:
 	export ACME_CA_URI=https://acme-staging-v02.api.letsencrypt.org/directory
+
+Helpful Docker Commands:
+	docker system prune (get rid of all containers once you don't need them)
+	docker-compose -f docker-compose.prod.yml down -v (stop all of your running containers)
+	docker-compose -f docker-compose.prod.yml up -d --build (build and bring containers up)
+	sudo docker-compose -f docker-compose.prod.yml exec web python manage.py collectstatic --no-input --clear (collect static files)
+	docker logs {container id} (show container logs)
+	docker ps -a (list containers) (list container ids)
+	docker exec -it {container id} bash (open shell in container)

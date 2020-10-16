@@ -134,7 +134,7 @@ MAX_REQUESTS = 1
 
 # max results is 100 for the sandbox api and 500 for premium I don't really think I'm
 # ever going to want to change this, but maybe
-MAX_RESULTS = 100
+MAX_RESULTS = 500
 
 FULL_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/fullarchive/dev.json'
 MONTH_ENDPOINT = 'https://api.twitter.com/1.1/tweets/search/30day/dev.json'
