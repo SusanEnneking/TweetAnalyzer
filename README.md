@@ -21,7 +21,9 @@ To get started, if you want to use Vagrant, download [Vagrant](https://www.vagra
 
 You'll need to increase the allowed number of tweets in the researcher table because the default is zero.
 
-Now you can log in as the super user you just created and get going.  
+Now you can log in as the super user you just created and get going. 
+
+The [painful play-by-play](https://ennekingsystemsolutions.com/blog/). 
 
 #### Helpful Info (as in I can't remember anything) ####
 
