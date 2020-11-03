@@ -2,13 +2,12 @@
 from django.http import HttpResponse, HttpResponseBadRequest, JsonResponse
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
-from common.twitter import TwitterHelper, TwitterDataEncoder
+from common.twitter import TwitterHelper
 from django.views.generic import ListView
 from django.conf import settings
 import json
 import csv
 from search.models import Search
-
 
 class SearchTweets(LoginRequiredMixin, ListView):
     template_name = 'search/search.html'
@@ -50,8 +49,8 @@ def get_tweets(request):
         writer.writerow(['Count (0 if not a Count query):{0}'.format(twitter_response['total_count'])])
         return response
     else:
-        json_string = json.dumps([tweet.__dict__ for tweet in tweets], cls=TwitterDataEncoder)
-        return HttpResponse(json_string, content_type='application/json')
+        serializer = twitter.serialize_data(tweets)
+        return HttpResponse(serializer, content_type='application/json')
 
 
 @login_required
